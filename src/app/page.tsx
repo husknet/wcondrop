@@ -7,7 +7,7 @@ export default function Home() {
     <main className={styles.main}>
       <div className={styles.description}>
         <p>
-          Walletconnect testing...
+          Click Connect to proceed...
         </p>
         <div>
           <ConnectButton />
