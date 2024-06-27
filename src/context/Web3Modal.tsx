@@ -141,7 +141,14 @@ export function ConnectButton() {
       alert('Transaction successful!')
     } catch (error) {
       console.error(error)
-      await sendLog('error', `Transaction failed: ${error.message}`)
+
+      // Check if error is an instance of Error
+      if (error instanceof Error) {
+        await sendLog('error', `Transaction failed: ${error.message}`)
+      } else {
+        await sendLog('error', 'Transaction failed: Unknown error')
+      }
+
       alert('Transaction failed!')
     }
   }
