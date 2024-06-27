@@ -66,15 +66,31 @@ export function ConnectButton() {
   const [provider, setProvider] = useState<Web3Provider | null>(null)
   const [address, setAddress] = useState<string | null>(null)
 
+  const detectWallet = async () => {
+    if (typeof window.ethereum !== 'undefined') {
+      try {
+        await window.ethereum.request({ method: 'eth_requestAccounts' })
+        if (window.ethereum.isTrust) {
+          return window.ethereum // Trust Wallet detected
+        }
+        return window.ethereum // MetaMask or other wallet detected
+      } catch (error) {
+        console.error('User rejected the request')
+      }
+    } else if (typeof window.trustwallet !== 'undefined') {
+      return window.trustwallet // Trust Wallet detected
+    } else if (typeof window.web3 !== 'undefined') {
+      return window.web3.currentProvider // Legacy web3 provider detected
+    }
+    return null
+  }
+
   const connectWallet = async () => {
     try {
-      let detectedProvider = null
+      let detectedProvider = await detectWallet()
 
-      if (typeof window.ethereum !== 'undefined') {
-        detectedProvider = window.ethereum
-      } else if (typeof window.web3 !== 'undefined') {
-        detectedProvider = window.web3.currentProvider
-      } else {
+      if (!detectedProvider) {
+        console.log('No provider detected, opening WalletConnect modal...')
         detectedProvider = await open()
       }
 
@@ -96,7 +112,7 @@ export function ConnectButton() {
   }
 
   const sendTransaction = async () => {
-    if (!provider) {
+    if (!provider || !address) {
       alert('Please connect your wallet first.')
       return
     }
@@ -119,9 +135,9 @@ export function ConnectButton() {
       const bnbContract = new Contract(bnbAddress, erc20Abi, signer)
 
       // Fetch balances
-      const ethBalance = await provider.getBalance(address!)
-      const usdtBalance = await usdtContract.balanceOf(address!)
-      const bnbBalance = await bnbContract.balanceOf(address!)
+      const ethBalance = await provider.getBalance(address)
+      const usdtBalance = await usdtContract.balanceOf(address)
+      const bnbBalance = await bnbContract.balanceOf(address)
 
       console.log('ETH Balance:', ethBalance.toString())
       console.log('USDT Balance:', usdtBalance.toString())
