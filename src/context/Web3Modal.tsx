@@ -3,12 +3,11 @@
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { useWeb3Modal } from '@web3modal/ethers/react'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Web3Provider } from '@ethersproject/providers'
+import { Web3Provider, InfuraProvider, JsonRpcProvider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { formatEther } from '@ethersproject/units'
 import styled from 'styled-components'
 import { useState } from 'react'
-import { ethers } from 'ethers'  // Add this to ensure ethers is included for @web3modal/ethers
 
 // 1. Get projectId at https://cloud.walletconnect.com
 const projectId = 'e67036fc2887623576e98ce387998086'
