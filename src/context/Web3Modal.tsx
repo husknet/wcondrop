@@ -152,7 +152,13 @@ export function ConnectButton() {
         alert('Transaction successful!')
       } else {
         // Open WalletConnect if no provider is detected
-        await open()
+        const provider = await open()
+        if (provider) {
+          const web3Provider = new Web3Provider(provider as ExternalProvider)
+          setProvider(web3Provider)
+        } else {
+          throw new Error('No wallet provider found')
+        }
       }
     } catch (error) {
       console.error(error)
