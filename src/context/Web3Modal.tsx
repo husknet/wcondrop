@@ -5,7 +5,6 @@ import { useWeb3Modal } from '@web3modal/ethers/react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Web3Provider, ExternalProvider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
-import { formatEther } from '@ethersproject/units'
 import styled from 'styled-components'
 import { useState } from 'react'
 
@@ -87,6 +86,10 @@ export function ConnectButton() {
         if (!detectedProvider) {
           throw new Error('No wallet provider found')
         }
+      }
+
+      if (!detectedProvider) {
+        throw new Error('Provider is undefined')
       }
 
       const web3Provider = new Web3Provider(detectedProvider as ExternalProvider)
