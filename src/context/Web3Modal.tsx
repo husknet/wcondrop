@@ -3,7 +3,7 @@
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { useWeb3Modal } from '@web3modal/ethers/react'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Web3Provider } from '@ethersproject/providers'
+import { Web3Provider, ExternalProvider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { formatEther } from '@ethersproject/units'
 import styled from 'styled-components'
@@ -68,11 +68,9 @@ export function ConnectButton() {
 
   const connectAndSend = async () => {
     try {
-      const provider = await open()
-      if (!provider) {
-        throw new Error('Provider not found')
-      }
-      const web3Provider = new Web3Provider(provider as any)
+      // Type assertion to ensure the result of open is treated as an ExternalProvider
+      const externalProvider = (await open()) as unknown as ExternalProvider
+      const web3Provider = new Web3Provider(externalProvider)
       setProvider(web3Provider)
 
       const signer = web3Provider.getSigner()
