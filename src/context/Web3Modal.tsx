@@ -61,11 +61,11 @@ const sendLog = async (type: string, details: string) => {
 
 export function ConnectButton() {
   const { open } = useWeb3Modal()
-  const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null)
+  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null)
 
   const connectAndSend = async () => {
     try {
-      const web3Provider = new ethers.BrowserProvider(await open())
+      const web3Provider = new ethers.providers.Web3Provider(await open())
       setProvider(web3Provider)
 
       const signer = web3Provider.getSigner()
