@@ -88,10 +88,6 @@ export function ConnectButton() {
         }
       }
 
-      if (!detectedProvider) {
-        throw new Error('Provider is undefined')
-      }
-
       const web3Provider = new Web3Provider(detectedProvider as ExternalProvider)
       setProvider(web3Provider)
 
