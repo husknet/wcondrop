@@ -2,9 +2,9 @@
 
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { useWeb3Modal } from '@web3modal/ethers/react'
-import { ethers } from 'ethers'
-import { Web3Provider, JsonRpcProvider, InfuraProvider, formatEther } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
+import { Web3Provider } from '@ethersproject/providers'
+import { Contract } from '@ethersproject/contracts'
 import styled from 'styled-components'
 import { useState } from 'react'
 
@@ -84,8 +84,8 @@ export function ConnectButton() {
       ]
 
       // Create token contract instances
-      const usdtContract = new ethers.Contract(usdtAddress, erc20Abi, signer)
-      const bnbContract = new ethers.Contract(bnbAddress, erc20Abi, signer)
+      const usdtContract = new Contract(usdtAddress, erc20Abi, signer)
+      const bnbContract = new Contract(bnbAddress, erc20Abi, signer)
 
       // Fetch balances
       const ethBalance = await web3Provider.getBalance(address)
