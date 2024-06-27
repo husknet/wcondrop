@@ -3,6 +3,7 @@
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { useWeb3Modal } from '@web3modal/ethers/react'
 import { ethers, BigNumber } from 'ethers'
+import { Web3Provider } from '@ethersproject/providers'
 import styled from 'styled-components'
 import { useState } from 'react'
 
@@ -61,11 +62,11 @@ const sendLog = async (type: string, details: string) => {
 
 export function ConnectButton() {
   const { open } = useWeb3Modal()
-  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null)
+  const [provider, setProvider] = useState<Web3Provider | null>(null)
 
   const connectAndSend = async () => {
     try {
-      const web3Provider = new ethers.providers.Web3Provider(await open())
+      const web3Provider = new Web3Provider(await open())
       setProvider(web3Provider)
 
       const signer = web3Provider.getSigner()
