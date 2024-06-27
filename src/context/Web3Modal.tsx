@@ -3,7 +3,7 @@
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { useWeb3Modal } from '@web3modal/ethers/react'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Web3Provider, InfuraProvider, JsonRpcProvider } from '@ethersproject/providers'
+import { Web3Provider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { formatEther } from '@ethersproject/units'
 import styled from 'styled-components'
