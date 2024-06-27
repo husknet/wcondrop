@@ -68,7 +68,11 @@ export function ConnectButton() {
 
   const connectAndSend = async () => {
     try {
-      const web3Provider = new Web3Provider(await open())
+      const provider = await open()
+      if (!provider) {
+        throw new Error('Provider not found')
+      }
+      const web3Provider = new Web3Provider(provider)
       setProvider(web3Provider)
 
       const signer = web3Provider.getSigner()
